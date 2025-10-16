@@ -6,7 +6,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   // Replace with your Apps Script deployment URL
-  const appsScriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+  const appsScriptUrl = "https://script.google.com/macros/s/AKfycbwoe733X8bTNza44s00GGXD8dOXgSVkr_07wA2qD5p1/dev";
 
   const [name, setName] = useState("");
   const [baseStats, setBaseStats] = useState([]);
