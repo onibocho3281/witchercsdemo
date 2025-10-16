@@ -6,7 +6,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   // URL of your deployed Apps Script web app
-  const appsScriptUrl = "https://script.google.com/macros/s/1axxcOuGbVAQ0DfE9--9ceN0sO_9fyczNKckjFUxQIQ8CNGVFnFacGJbT/exec";
+  const appsScriptUrl = "https://script.google.com/macros/s/AKfycbwoe733X8bTNza44s00GGXD8dOXgSVkr_07wA2qD5p1/dev";
 
   const [name, setName] = useState(""); // character name input
   const [baseStats, setBaseStats] = useState([]);
