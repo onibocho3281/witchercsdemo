@@ -1,0 +1,10 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+input:focus {
+  outline: 2px solid #4f46e5; /* highlight on focus */
+}
