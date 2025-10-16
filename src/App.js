@@ -1,37 +1,20 @@
 import React, { useEffect, useState } from "react";
 
 export default function App() {
-  const [sheetUrl, setSheetUrl] = useState("");
+  const [sheetUrl, setSheetUrl] = useState(""); // User's copy URL
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Replace with your Apps Script deployment URL
-  const appsScriptUrl = "https://script.google.com/macros/s/AKfycbxTm3iiQPNLwrV9GeKYqLxlMe4QpDw50oPwvFco4eQpQFm_OW3pGmOEEc6bvFPjY3Dx2A/exec";
-
-  const [name, setName] = useState("");
   const [baseStats, setBaseStats] = useState([]);
+  const [characterName, setCharacterName] = useState(""); // auto-populated from sheet
 
-  const createNewCharacter = async () => {
-    if (!name) return alert("Please enter a character name!");
-    setLoading(true);
-    try {
-      const response = await fetch(`${appsScriptUrl}?name=${encodeURIComponent(name)}`);
-      const result = await response.json();
-      const newSheetUrl = result.url;
-      setSheetUrl(newSheetUrl);
-      setData([]);
-    } catch (err) {
-      console.error(err);
-      alert("Error creating new character sheet");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const templateUrl = "https://docs.google.com/spreadsheets/d/YOUR_TEMPLATE_ID/edit";
 
+  // Fetch sheet data when URL changes
   useEffect(() => {
     if (!sheetUrl) return;
-
     setLoading(true);
+
     const fetchSheet = async () => {
       try {
         const sheetId = sheetUrl.match(/\/d\/(.*?)\//)[1];
@@ -43,13 +26,17 @@ export default function App() {
         const rows = json.table.rows.map((r) =>
           r.c.map((cell) => (cell ? cell.v : ""))
         );
+
         setData(rows);
+
+        // Assume character name is in cell A1 (row 0, column 0)
+        setCharacterName(rows[0][0] || "");
 
         const baseStatsRows = rows.slice(15, 22);
         setBaseStats(baseStatsRows.map((row) => row[1] || ""));
       } catch (err) {
         console.error(err);
-        alert("Error loading character sheet data");
+        alert("Error loading your character sheet. Make sure your sheet is shared properly.");
       } finally {
         setLoading(false);
       }
@@ -107,21 +94,33 @@ export default function App() {
 
       <section className="mb-6 p-4 border rounded shadow bg-white">
         <h2 className="text-xl font-semibold mb-2">Create New Character</h2>
-        <div className="flex items-center gap-2 mb-2">
-          <input
-            type="text"
-            placeholder="Character Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="border rounded p-1 w-40"
-          />
-          <button
-            onClick={createNewCharacter}
-            className="bg-blue-600 text-white px-3 py-1 rounded"
-          >
-            {loading ? "Creating..." : "New Character"}
-          </button>
-        </div>
+        <p className="mb-2">
+          1. Click the button below to open the template sheet.
+        </p>
+        <p className="mb-2">
+          2. In Google Sheets, go to <strong>File → Make a copy</strong> and save it in your Drive.
+        </p>
+        <p className="mb-2">
+          3. Paste the URL of your copy below to load it in this app.
+        </p>
+        <button
+          onClick={() => window.open(templateUrl, "_blank")}
+          className="bg-blue-600 text-white px-3 py-1 rounded mb-2"
+        >
+          Open Template Sheet
+        </button>
+        <input
+          type="text"
+          placeholder="Paste your sheet URL here"
+          value={sheetUrl}
+          onChange={(e) => setSheetUrl(e.target.value)}
+          className="border rounded p-1 w-full mb-2"
+        />
+        {characterName && (
+          <p>
+            <strong>Character Name:</strong> {characterName}
+          </p>
+        )}
       </section>
 
       {sheetUrl && (
