@@ -6,11 +6,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   const [baseStats, setBaseStats] = useState([]);
-  const [characterName, setCharacterName] = useState(""); // auto-populated from sheet
+  const [characterName, setCharacterName] = useState("");
 
-  const templateUrl = "https://script.google.com/macros/s/AKfycbwoe733X8bTNza44s00GGXD8dOXgSVkr_07wA2qD5p1/dev";
+  // URL of your template sheet
+  const templateUrl = "https://docs.google.com/spreadsheets/d/YOUR_TEMPLATE_ID/edit";
 
-  // Fetch sheet data when URL changes
+  // Fetch sheet data whenever the user pastes their URL
   useEffect(() => {
     if (!sheetUrl) return;
     setLoading(true);
@@ -22,6 +23,8 @@ export default function App() {
 
         const res = await fetch(gvizUrl);
         const text = await res.text();
+
+        // Convert Google Visualization JSON to standard JSON
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows.map((r) =>
           r.c.map((cell) => (cell ? cell.v : ""))
@@ -29,14 +32,17 @@ export default function App() {
 
         setData(rows);
 
-        // Assume character name is in cell A1 (row 0, column 0)
+        // Character name is assumed in cell A1
         setCharacterName(rows[0][0] || "");
 
+        // Base stats assumed in rows 16-22 (0-indexed)
         const baseStatsRows = rows.slice(15, 22);
         setBaseStats(baseStatsRows.map((row) => row[1] || ""));
       } catch (err) {
         console.error(err);
-        alert("Error loading your character sheet. Make sure your sheet is shared properly.");
+        alert(
+          "Error loading your character sheet. Make sure your sheet is shared properly."
+        );
       } finally {
         setLoading(false);
       }
@@ -93,7 +99,7 @@ export default function App() {
       </h1>
 
       <section className="mb-6 p-4 border rounded shadow bg-white">
-        <h2 className="text-xl font-semibold mb-2">Create New Character</h2>
+        <h2 className="text-xl font-semibold mb-2">Create / Load Character</h2>
         <p className="mb-2">
           1. Click the button below to open the template sheet.
         </p>
