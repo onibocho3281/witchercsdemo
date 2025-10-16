@@ -9,7 +9,7 @@ export default function App() {
   const [characterName, setCharacterName] = useState("");
 
   // URL of your template sheet
-  const templateUrl = "https://docs.google.com/spreadsheets/d/YOUR_TEMPLATE_ID/edit";
+  const templateUrl = "https://docs.google.com/spreadsheets/d/1mUHQy9NsT1FFWfer78xGyPePQI21gAgXqos_fjAQTAQ/edit?usp=drivesdk";
 
   // Fetch sheet data whenever the user pastes their URL
   useEffect(() => {
