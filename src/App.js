@@ -1,46 +1,39 @@
 import React, { useEffect, useState } from "react";
 
 export default function App() {
-  const [sheetUrl, setSheetUrl] = useState(""); // URL of the current sheet
+  const [sheetUrl, setSheetUrl] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // URL of your deployed Apps Script web app
-  const appsScriptUrl = "https://script.google.com/macros/s/AKfycbwoe733X8bTNza44s00GGXD8dOXgSVkr_07wA2qD5p1/dev";
+  // Replace with your Apps Script deployment URL
+  const appsScriptUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
 
-  const [name, setName] = useState(""); // character name input
+  const [name, setName] = useState("");
   const [baseStats, setBaseStats] = useState([]);
 
-  // === Function to create a new character sheet ===
   const createNewCharacter = async () => {
-    if (!name) {
-      alert("Please enter a character name!");
-      return;
-    }
+    if (!name) return alert("Please enter a character name!");
     setLoading(true);
     try {
       const response = await fetch(`${appsScriptUrl}?name=${encodeURIComponent(name)}`);
       const result = await response.json();
       const newSheetUrl = result.url;
       setSheetUrl(newSheetUrl);
-      setData([]); // reset data, will fetch below
-    } catch (error) {
-      console.error(error);
+      setData([]);
+    } catch (err) {
+      console.error(err);
       alert("Error creating new character sheet");
     } finally {
       setLoading(false);
     }
   };
 
-  // === Fetch sheet data when sheetUrl changes ===
   useEffect(() => {
     if (!sheetUrl) return;
 
     setLoading(true);
     const fetchSheet = async () => {
       try {
-        // Convert the sheet URL to Google Visualization JSON URL
-        // sheetId is between /d/ and /edit in the sheet URL
         const sheetId = sheetUrl.match(/\/d\/(.*?)\//)[1];
         const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=General`;
 
@@ -52,7 +45,6 @@ export default function App() {
         );
         setData(rows);
 
-        // Initialize Base Stats (hard-coded rows for now)
         const baseStatsRows = rows.slice(15, 22);
         setBaseStats(baseStatsRows.map((row) => row[1] || ""));
       } catch (err) {
@@ -103,7 +95,6 @@ export default function App() {
     </table>
   );
 
-  // === Hard-coded sections (row ranges) ===
   const characterInfoRows = data.slice(0, 10);
   const baseStatsRows = data.slice(15, 22);
   const derivedStatsRows = data.slice(22, 35);
@@ -114,7 +105,6 @@ export default function App() {
         🧙 Witcher Character Sheet
       </h1>
 
-      {/* New Character Section */}
       <section className="mb-6 p-4 border rounded shadow bg-white">
         <h2 className="text-xl font-semibold mb-2">Create New Character</h2>
         <div className="flex items-center gap-2 mb-2">
@@ -136,19 +126,16 @@ export default function App() {
 
       {sheetUrl && (
         <>
-          {/* Character Info */}
           <section className="mb-6 p-4 border rounded shadow bg-white">
             <h2 className="text-xl font-semibold mb-2">Character Info</h2>
             {renderTable(characterInfoRows)}
           </section>
 
-          {/* Base Stats */}
           <section className="mb-6 p-4 border rounded shadow bg-white">
             <h2 className="text-xl font-semibold mb-2">Base Attributes</h2>
             {renderTable(baseStatsRows, true)}
           </section>
 
-          {/* Derived Stats */}
           <section className="mb-6 p-4 border rounded shadow bg-white">
             <h2 className="text-xl font-semibold mb-2">Derived Stats</h2>
             {renderTable(derivedStatsRows)}
