@@ -8,7 +8,7 @@ export default function App() {
   const [baseStats, setBaseStats] = useState([]);
   const [characterName, setCharacterName] = useState(""); // auto-populated from sheet
 
-  const templateUrl = "https://docs.google.com/spreadsheets/d/YOUR_TEMPLATE_ID/edit";
+  const templateUrl = "https://script.google.com/macros/s/AKfycbwoe733X8bTNza44s00GGXD8dOXgSVkr_07wA2qD5p1/dev";
 
   // Fetch sheet data when URL changes
   useEffect(() => {
